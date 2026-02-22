@@ -2,3 +2,5 @@ project_id = "nwesagjtzdwcqqlmsuhr"
 
 [functions.generate-matches]
 verify_jwt = false
+[functions.proxy-generate-matches]
+verify_jwt = false

@@ -33,12 +33,25 @@ const Dashboard = () => {
         return;
       }
 
-      const resp = await fetch("/api/generate-matches", {
+      const proxyUrl = import.meta.env.VITE_PROXY_SUPABASE_URL as string | undefined;
+      const proxyKey = import.meta.env.VITE_PROXY_SUPABASE_PUBLISHABLE_KEY as string | undefined;
+
+      if (proxyUrl && !proxyKey) {
+        throw new Error("Proxy Supabase key not configured (VITE_PROXY_SUPABASE_PUBLISHABLE_KEY)");
+      }
+
+      const endpoint = proxyUrl
+        ? `${proxyUrl}/functions/v1/proxy-generate-matches`
+        : `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-matches`;
+
+      const resp = await fetch(endpoint, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${session.access_token}`,
-          apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+          // If using proxy, this must be the proxy project's anon key.
+          // If not using proxy, this is the (friend) project's anon key.
+          apikey: proxyUrl ? (proxyKey || "") : import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
         },
         body: JSON.stringify({}),
       });
