@@ -33,13 +33,14 @@ const Dashboard = () => {
         return;
       }
 
-      const resp = await fetch(`/api/generate-matches?t=${Date.now()}`, {
-        method: "GET",
+      const resp = await fetch("/api/generate-matches", {
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${session.access_token}`,
           apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
         },
+        body: JSON.stringify({}),
       });
 
       if (!resp.ok) {
